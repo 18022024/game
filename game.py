@@ -121,16 +121,23 @@ if __name__ == '__main__':
     pygame.init()
     screen = pygame.display.set_mode(size)
     clock = pygame.time.Clock()
+    map_name = input('Введите название карты: ')
+    try:
+        load_level(map_name)
+    except Exception:
+        print('Карты с указаным названием не существует.')
+        sys.exit()
     start_screen()
 
+    screen.fill((0, 0, 0))
     player = None
     all_sprites = pygame.sprite.Group()
     tiles_group = pygame.sprite.Group()
     player_group = pygame.sprite.Group()
     camera = Camera()
-    player, level_x, level_y = generate_level(load_level('map.txt'))
+    player, level_x, level_y = generate_level(load_level(map_name))
     player_cords = player.rect.x, player.rect.y
-    map = load_level('map.txt')
+    map = load_level(map_name)
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -138,7 +145,9 @@ if __name__ == '__main__':
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
                     try:
-                        if map[player.x - 1][player.y] != '#':
+                        if player.x - 1 < 0:
+                            raise Exception
+                        if map[player.y][player.x - 1] != '#':
                             player.rect.x -= tile_width
                             player.x -= 1
                     except Exception:
@@ -146,7 +155,9 @@ if __name__ == '__main__':
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RIGHT:
                     try:
-                        if map[player.x + 1][player.y] != '#':
+                        if player.x + 1 > len(map[0]):
+                            raise Exception
+                        if map[player.y][player.x + 1] != '#':
                             player.rect.x += tile_width
                             player.x += 1
                     except Exception:
@@ -154,7 +165,9 @@ if __name__ == '__main__':
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_UP:
                     try:
-                        if map[player.x][player.y - 1] != '#':
+                        if player.y - 1 < 0:
+                            raise Exception
+                        if map[player.y - 1][player.x] != '#':
                             player.rect.y -= tile_height
                             player.y -= 1
                     except Exception:
@@ -162,7 +175,9 @@ if __name__ == '__main__':
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_DOWN:
                     try:
-                        if map[player.x][player.y + 1] != '#':
+                        if player.y + 1 > len(map):
+                            raise Exception
+                        if map[player.y + 1][player.x] != '#':
                             player.rect.y += tile_height
                             player.y += 1
                     except Exception:
