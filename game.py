@@ -182,12 +182,15 @@ if __name__ == '__main__':
                             player.y += 1
                     except Exception:
                         pass
+        screen.fill((0, 0, 0))
+        camera.update(player)
         all_sprites.update()
         tiles_group.update()
         player_group.update()
+        for sprite in all_sprites:
+            camera.apply(sprite)
         all_sprites.draw(screen)
         tiles_group.draw(screen)
         player_group.draw(screen)
         pygame.display.flip()
         clock.tick(60)
-
